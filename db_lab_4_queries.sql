@@ -8,8 +8,7 @@ select city
 from   agents
 where  aid in (select aid
                from   orders
-               where  orders.cid = 'c006'
-              )
+               where  orders.cid = 'c006');
 
 -- Question 2
 -- Get the pids of products ordered through any agent who takes
@@ -17,7 +16,7 @@ where  aid in (select aid
 -- from highest to lowest
 select pid
 from   products
-where  ???
+where  pid in ???
 order by pid desc
 
 -- Question 3
@@ -27,8 +26,7 @@ select cid, name
 from   customers
 where  cid in (select cid
                from   orders
-               where  orders.aid != 'a03'
-              );
+               where  orders.aid != 'a03');
 
 -- Question 4
 -- Get the cids of customers who ordered both product p01 and p07
@@ -37,17 +35,35 @@ from   customers
 where  cid in (select cid
                from   orders
                where  orders.pid = 'p01'
-                  or  orders.pid = 'p07'
-              );
+                  or  orders.pid = 'p07');
 
 -- Question 5
 -- Get the pids of products NOT ordered by any customers who placed
 -- any order through agent a05
+select pid
+from   products
+where  ??? 
 
 -- Question 6
 -- Get the name, discounts, and city for all customers who place
 -- orders through agents in Dallas or New York
+select name, discount, city
+from   customers
+where  cid in (select cid
+               from   orders
+               where  orders.aid in (select aid
+                                     from   agents
+                                     where  city = 'Dallas'
+                                        or  city = 'New York'));
 
 -- Question 7
 -- Get all customers who have the same discount as that of any
 -- customers in Dallas or London
+
+
+
+
+
+
+
+
