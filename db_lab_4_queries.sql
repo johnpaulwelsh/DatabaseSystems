@@ -59,11 +59,9 @@ where  cid in (select cid
 -- Question 7
 -- Get all customers who have the same discount as that of any
 -- customers in Dallas or London
-
-
-
-
-
-
-
-
+select *
+from   customers
+where  discount in (select discount
+                    from   customers
+                    where  customers.city = 'Dallas'
+                       or  customers.city = 'London');
