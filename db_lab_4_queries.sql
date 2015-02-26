@@ -42,7 +42,9 @@ where  cid in (select cid
 -- any order through agent a05
 select pid
 from   products
-where  ??? 
+where  pid not in (select cid
+                   from   orders
+                   where  orders.aid = 'a005'); -- giving me every pid
 
 -- Question 6
 -- Get the name, discounts, and city for all customers who place
