@@ -25,7 +25,10 @@ order by pid desc
 -- through agent a03
 select cid, name
 from   customers
-where  ???
+where  cid in (select cid
+               from   orders
+               where  orders.aid != 'a03'
+              );
 
 -- Question 4
 -- Get the cids of customers who ordered both product p01 and p07
@@ -35,7 +38,7 @@ where  cid in (select cid
                from   orders
                where  orders.pid = 'p01'
                   or  orders.pid = 'p07'
-              )
+              );
 
 -- Question 5
 -- Get the pids of products NOT ordered by any customers who placed
