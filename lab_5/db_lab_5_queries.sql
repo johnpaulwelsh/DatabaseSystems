@@ -13,6 +13,12 @@ select a.city
 -- Show the pids of products ordered through any agent who
 -- makes at least one order for a customer in Kyoto, sorted
 -- by pid from highest to lowest. Use joins; no subqueries.
+select p.pid
+  from agents a, customers c, orders o, products p
+ where c.cid  = o.cid
+   and a.aid  = o.aid
+   and p.pid  = o.pid
+   and c.city = 'Kyoto'
 
 -- Question 3
 -- Show the names of customers who have never placed an order.
