@@ -5,8 +5,10 @@
 -- Show the cities of agents booking an order for a customer
 -- whose pid is 'c006'. Use joins; no subqueries.
 select a.city
-  from agents a inner join orders o
-    on a.aid = o.aid
+  from agents a
+       inner join
+       orders o
+    on o.aid = a.aid
    and o.cid = 'c006'
 
 -- Question 2
@@ -14,19 +16,31 @@ select a.city
 -- makes at least one order for a customer in Kyoto, sorted
 -- by pid from highest to lowest. Use joins; no subqueries.
 select p.pid
-  from agents a, customers c, orders o, products p
- where c.cid  = o.cid
-   and a.aid  = o.aid
-   and p.pid  = o.pid
+  from agents    a,
+       customers c,
+       orders    o,
+       products  p
+ where o.pid  = p.pid
+   and o.aid  = a.aid
+   and o.cid  = c.cid
    and c.city = 'Kyoto'
 
 -- Question 3
 -- Show the names of customers who have never placed an order.
 -- Use a subquery.
+select customers.name
+  from customers
+ where cid not in (select cid
+                   from   orders)
 
 -- Question 4
 -- Show the names of customers who have never placed an order.
 -- Use an outer join.
+select c.name
+  from customers c
+       left outer join
+       orders o
+    on o.cid = c.cid
 
 -- Question 5
 -- Show the names of customers who placed at least one order
