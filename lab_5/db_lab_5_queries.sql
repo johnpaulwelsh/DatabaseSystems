@@ -4,6 +4,10 @@
 -- Question 1
 -- Show the cities of agents booking an order for a customer
 -- whose pid is 'c006'. Use joins; no subqueries.
+select a.city
+  from agents a inner join orders o
+    on a.aid = o.aid
+   and o.cid = 'c006'
 
 -- Question 2
 -- Show the pids of products ordered through any agent who
