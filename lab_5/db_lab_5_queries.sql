@@ -45,6 +45,13 @@ select c.name
 -- Question 5
 -- Show the names of customers who placed at least one order
 -- through an agent in their own city, along with those agent(s') names.
+select c.name, a.name
+  from customers c,
+       agents    a,
+       orders    o
+ where o.aid  = a.aid
+   and o.cid  = c.cid
+   and c.city = a.city
 
 -- Question 6
 -- Show the names of customers and agents living in the same
