@@ -31,7 +31,7 @@ select p.pid
 select customers.name
   from customers
  where cid not in (select cid
-                   from   orders)
+                     from orders)
 
 -- Question 4
 -- Show the names of customers who have never placed an order.
