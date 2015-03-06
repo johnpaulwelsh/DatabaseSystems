@@ -28,6 +28,7 @@ select distinct p.pid
    and c.city = 'Kyoto'
 order by p.pid DESC
 -- pid: p07, p01
+----------------
 -- Unless they mean through any agent who's ever made an order
 -- to the Kyoto Acme, but not necessarily just the orders with
 -- that customer only. In that case, screw you.
@@ -92,10 +93,15 @@ select c.name cust_name,
 -- (Hint: Use count and group by on the Products table.)
 
 -- This is definitely the one that needs a subquery. Goddammit.
-(select pid, count(city)
-   from products
-  group by pid
-  where 
+
+-- Gets pairs of (product names and cities) where the product
+-- is made in the same city
+select distinct p1.name, p1.city, p2.name, p2.city
+   from products p1
+        inner join
+        products p2
+     on p1.city = p2.city
+    and p1 > p2
 
 -- name: Tiptop, ACME
 -- city: Duluth, Duluth
