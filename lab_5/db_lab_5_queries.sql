@@ -17,7 +17,7 @@ select a.city
 -- Show the pids of products ordered through any agent who
 -- makes at least one order for a customer in Kyoto, sorted
 -- by pid from highest to lowest. Use joins; no subqueries.
-select p.pid
+select distinct p.pid
   from agents    a,
        customers c,
        orders    o,
@@ -27,7 +27,7 @@ select p.pid
    and o.cid  = c.cid
    and c.city = 'Kyoto'
 order by p.pid DESC
--- pid: p07, p01, p01
+-- pid: p07, p01
 -- Unless they mean through any agent who's ever made an order
 -- to the Kyoto Acme, but not necessarily just the orders with
 -- that customer only. In that case, screw you.
@@ -36,8 +36,8 @@ order by p.pid DESC
 -- Question 3
 -- Show the names of customers who have never placed an order.
 -- Use a subquery.
-select customers.name
-  from customers
+select c.name
+  from customers c
  where cid not in (select cid
                      from orders)
 -- name: Weyland-Yutani
@@ -50,7 +50,8 @@ select c.name
   from customers c
        left outer join
        orders o
-    on o.cid is null
+    on c.cid = o.cid
+ where o.ordno is null
 -- name: Weyland-Yutani
 
 
@@ -90,7 +91,11 @@ select c.name cust_name,
 -- that makes the fewest different kinds of products.
 -- (Hint: Use count and group by on the Products table.)
 
--- This is definitely the one that needa a subquery. Goddammit.
+-- This is definitely the one that needs a subquery. Goddammit.
+(select pid, count(city)
+   from products
+  group by pid
+  where 
 
 -- name: Tiptop, ACME
 -- city: Duluth, Duluth
