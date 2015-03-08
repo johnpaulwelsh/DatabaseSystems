@@ -3,13 +3,13 @@
 
 -- Question 1
 -- Show the cities of agents booking an order for a customer
--- whose pid is 'c006'. Use joins; no subqueries.
+-- whose cid is 'c006'. Use joins; no subqueries.
 select a.city
   from agents a
        inner join
        orders o
     on o.aid = a.aid
-   and o.cid = 'c006'
+   and o.cid = 'c006';
 -- city: New York, Tokyo, Dallas
 
 
@@ -26,9 +26,8 @@ select distinct p.pid
    and o.aid  = a.aid
    and o.cid  = c.cid
    and c.city = 'Kyoto'
-order by p.pid DESC
+order by p.pid DESC;
 -- pid: p07, p01
-----------------
 -- Unless they mean through any agent who's ever made an order
 -- to the Kyoto Acme, but not necessarily just the orders with
 -- that customer only. In that case, screw you.
@@ -40,7 +39,7 @@ order by p.pid DESC
 select c.name
   from customers c
  where cid not in (select cid
-                     from orders)
+                     from orders);
 -- name: Weyland-Yutani
 
 
@@ -52,7 +51,7 @@ select c.name
        left outer join
        orders o
     on c.cid = o.cid
- where o.ordno is null
+ where o.ordno is null;
 -- name: Weyland-Yutani
 
 
@@ -66,7 +65,7 @@ select c.name cust_name,
        orders    o
  where o.aid  = a.aid
    and o.cid  = c.cid
-   and c.city = a.city
+   and c.city = a.city;
 -- cust_name: Tiptop, Tiptop
 -- agnt_name: Otasi,  Otasi
 
@@ -81,7 +80,7 @@ select c.name cust_name,
        c.city shared_city
   from customers c,
        agents    a
- where c.city = a.city
+ where c.city = a.city;
 -- cust_name:   ACME,   Tiptop, Allied, Basics
 -- agnt_name:   Otasi,  Otasi,  Smith,  Smith
 -- shared_city: Duluth, Duluth, Dallas, Dallas
@@ -91,14 +90,15 @@ select c.name cust_name,
 -- Show the name and city of customers who live in the city
 -- that makes the fewest different kinds of products.
 -- (Hint: Use count and group-by on the Products table.)
-
--- This is definitely the one that needs a subquery. Goddammit.
-select pid, city
-  from products
- group by "the non-aggregate columns"
-having "condition with aggregate"
-
-select * from products
-
+select c.name,
+       c.city
+  from customers c,
+      (select p.city,
+              count(p.city)
+         from products p
+        group by p.city
+        limit 1)
+           as diffProds
+ where c.city = diffProds.city;
 -- name: Tiptop, ACME
 -- city: Duluth, Duluth
