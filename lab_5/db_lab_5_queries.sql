@@ -90,18 +90,15 @@ select c.name cust_name,
 -- Question 7
 -- Show the name and city of customers who live in the city
 -- that makes the fewest different kinds of products.
--- (Hint: Use count and group by on the Products table.)
+-- (Hint: Use count and group-by on the Products table.)
 
 -- This is definitely the one that needs a subquery. Goddammit.
+select pid, city
+  from products
+ group by "the non-aggregate columns"
+having "condition with aggregate"
 
--- Gets pairs of (product names and cities) where the product
--- is made in the same city
-select distinct p1.name, p1.city, p2.name, p2.city
-   from products p1
-        inner join
-        products p2
-     on p1.city = p2.city
-    and p1 > p2
+select * from products
 
 -- name: Tiptop, ACME
 -- city: Duluth, Duluth
