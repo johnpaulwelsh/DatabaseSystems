@@ -84,6 +84,17 @@ select c.name cust_name,
 -- Show the name and city of customers who live in the city
 -- that makes the fewest different kinds of products.
 -- (Hint: Use count and group-by on the Products table.)
-
+select c.name,
+       c.city
+  from customers c,
+       (
+       select p.city,
+              count(p.pid)
+         from products p
+        group by p.city
+        order by count(p.pid) ASC
+        limit 1
+       ) as prodCounts
+ where prodCounts.city = c.city
 -- name: Tiptop, ACME
 -- city: Duluth, Duluth
