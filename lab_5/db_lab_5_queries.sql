@@ -17,20 +17,8 @@ select a.city
 -- Show the pids of products ordered through any agent who
 -- makes at least one order for a customer in Kyoto, sorted
 -- by pid from highest to lowest. Use joins; no subqueries.
-select distinct p.pid
-  from agents    a,
-       customers c,
-       orders    o,
-       products  p
- where o.pid  = p.pid
-   and o.aid  = a.aid
-   and o.cid  = c.cid
-   and c.city = 'Kyoto'
-order by p.pid DESC;
+
 -- pid: p07, p01
--- Unless they mean through any agent who's ever made an order
--- to the Kyoto Acme, but not necessarily just the orders with
--- that customer only. In that case, screw you.
 
 
 -- Question 3
@@ -90,15 +78,6 @@ select c.name cust_name,
 -- Show the name and city of customers who live in the city
 -- that makes the fewest different kinds of products.
 -- (Hint: Use count and group-by on the Products table.)
-select c.name,
-       c.city
-  from customers c,
-      (select p.city,
-              count(p.city)
-         from products p
-        group by p.city
-        limit 1)
-           as diffProds
- where c.city = diffProds.city;
+
 -- name: Tiptop, ACME
 -- city: Duluth, Duluth

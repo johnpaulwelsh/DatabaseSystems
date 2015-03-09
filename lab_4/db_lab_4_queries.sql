@@ -14,16 +14,7 @@ select city
 -- Get the pids of products ordered through any agent who takes
 -- at least one order from a customer in Kyoto, sorted by pid
 -- from highest to lowest
-select pid
-  from products
- where pid in (select pid
-                 from orders
-                where orders.aid in (select aid
-                                       from orders
-                                      where orders.cid in (select cid
-                                                             from customers
-                                                            where customers.city = 'Kyoto')))
-order by pid asc;
+
 
 -- Question 3
 -- Get the cids and names of customers who did not place an order
