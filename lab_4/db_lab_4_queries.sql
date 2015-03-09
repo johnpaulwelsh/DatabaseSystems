@@ -17,12 +17,14 @@ select city
 -- at least one order from a customer in Kyoto, sorted by pid
 -- from highest to lowest
 
-select o.cid
-  from orders o
- where o.cid in (select c.cid
-                   from customers c
-                  where c.city = 'Kyoto')
--- NOT DONE
+select distinct o1.pid
+  from orders o1
+ where o1.aid in (select o2.aid
+                    from orders o2
+                   where o2.cid in (select c.cid
+                                      from customers c
+                                     where c.city = 'Kyoto'));
+-- pid: p04, p07, p01, p05, p03
 
 
 -- Question 3
