@@ -6,11 +6,34 @@
 -- that makes the most different kinds of products.
 -- (There are two cities that make the most different products.
 -- Return the name and city of customers from either one of those.)
+select c.name,
+       c.city
+  from customers c,
+       (
+       select p.city,
+              count(p.pid)
+         from products p
+        group by p.city
+        order by count(p.pid) DESC
+        limit 1
+       ) as prodCounts
+ where prodCounts.city = c.city
+-- name: Basics, Allied
+-- city: Dallas, Dallas
 
 
 -- Question 2
 -- Display the names of products whose priceUSD is below the
 -- average priceUSD, in alphabetical order.
+select p.name
+  from products p,
+       (
+       select avg(priceUSD)
+         from products
+       ) as averagePrice
+ where p.priceUSD < averagePrice.avg
+ order by p.name ASC
+-- name: brush, case, comb, pen, pencil, razor
 
 
 -- Question 3
