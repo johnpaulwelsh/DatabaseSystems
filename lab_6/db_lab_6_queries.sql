@@ -37,8 +37,21 @@ select p.name
 
 
 -- Question 3
--- Display the customer name, pid ordered, and the dollars for all
+-- Display the customer name, cid ordered, and the dollars for all
 -- orders, sorted by dollars from high to low.
+select cust.name,
+       o.dollars
+  from (
+       select *
+         from customers c
+        order by c.cid ASC
+       ) as cust
+       inner join
+       orders o
+    on o.cid = cust.cid
+ order by o.dollars
+-- name:    Tiptop, ACME,   Tiptop, Tiptop, ACME,   ACME,   Tiptop, Tiptop, ACME,   Tiptop, Tiptop, Basics, Basics, Allied
+-- dollars: 180.00, 400.00, 450.00, 450.00, 460.00, 500.00, 540.00, 540.00, 600.00, 720.00, 720.00, 740.00, 880.00, 1104.00
 
 
 -- Question 4
