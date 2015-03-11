@@ -64,6 +64,20 @@ select cust.name,
 -- Display the names of all customers who bought products from
 -- agents based in Tokyo along with the names of the products
 -- they ordered, and the names of the agents who sold it to them.
+select c.name cust_name,
+       p.name prod_name,
+       a.name agnt_name
+  from orders    o,
+       products  p,
+       customers c,
+       agents    a
+ where a.city = 'Tokyo'
+   and o.aid  = a.aid
+   and o.pid  = p.pid
+   and o.cid  = c.cid
+-- cust_name: Basics, Allied, Tiptop, ACME
+-- prod_name: Brown,  Brown,  Brown,  Brown
+-- agnt_name: razor,  pencil, pen,    case
 
 
 -- Question 6
