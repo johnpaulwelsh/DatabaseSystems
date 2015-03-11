@@ -4,6 +4,22 @@ Lab 6 Question 7
 
 * A right outer join is the same as a left outer join, but the results from the right table are ensured to be in the join, and are paired with NULL entries wherever they do not have a match in the left table.
 
-* Here are some example queries for a left outer join and a right outer join, using the CAP2 database:
+* Here is an example query for both a left outer join and a right outer join, using the CAP2 database:
 
+Left outer join (some customers don't have any orders)
+```
+select *
+  from customers c
+       left outer join
+       orders    o
+    on o.cid = c.cid
+```
 
+Right outer join (some products have never been ordered)
+```
+select *
+  from orders   o
+       right outer join
+       products p
+    on o.pid = p.pid
+```
