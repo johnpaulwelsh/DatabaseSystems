@@ -58,6 +58,16 @@ select cust.name,
 -- Display all customer names (in reverse alphabetical order)
 -- and their total ordered, and nothing more. Use coalesce to
 -- avoid showing NULLs.
+select c.name,
+       coalesce(sum(o.dollars), 0.00)
+  from customers c
+       left outer join
+       orders    o
+    on o.cid = c.cid
+ group by c.name
+ order by c.name DESC
+-- name:     Weyland-Yutani, Tiptop,  Basics,  Allied,  ACME
+-- coalesce: 0.00,           3600.00, 1620.00, 1104.00, 1960.00
 
 
 -- Question 5
