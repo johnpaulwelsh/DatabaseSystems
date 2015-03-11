@@ -86,4 +86,20 @@ select c.name cust_name,
 -- in other tables and comparing those values to the values in
 -- Orders.dollars. Display all rows in Orders where Orders.dollars
 -- is incorrect, if any.
-
+select o.*
+  from orders    o,
+       products  p,
+       customers c
+ where o.pid = p.pid
+   and o.cid = c.cid
+   and o.dollars not in (
+                        select (o.qty * p.priceusd - (p.priceusd * c.discount)) as calc_dollars
+                          from orders    o,
+                               products  p,
+                               customers c
+                         where o.pid = p.pid
+                           and o.cid = c.cid
+                        )
+ -- ordno: 1011, 1013, 1015, 1017, 1018, 1019, 1021, 1022, 1023, 1024, 1026
+ -- ...
+ 
