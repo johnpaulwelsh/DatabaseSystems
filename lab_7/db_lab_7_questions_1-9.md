@@ -1,10 +1,15 @@
+John Paul Welsh
+===============
+
 Lab 7
 =====
 
 **Question 1**
-* Upon seeing the single spreadsheet, I would say that I could devise for him a better system that would make it easier and safer for him to maintain this information. I would strongly encourage that he adopt my way of doing things, but he does have the last say so I would not be pushy.
+
+Upon seeing the single spreadsheet, I would say that I could devise for him a better system that would make it easier and safer for him to maintain this information. I would strongly encourage that he adopt my way of doing things, but he does have the last say so I would not be pushy.
 
 **Question 2**
+
 PackageID | TagNumber | InstallDate | SoftwareCostUSD
 --------- |:---------:| ----------- |:--------------:
 AC01      | 32808     | 09-13-2005  | 754.95
@@ -18,9 +23,11 @@ WP09      | 59836     | 10-30-2005  | 35.00
 WP09      | 77740     | 05-27-2005  | 35.00
 
 **Question 3**
-* The primary key is PackageID and TagNumber, together.
+
+The primary key is PackageID and TagNumber, together.
 
 **Question 4**
+
 PackageID | TagNumber | PackageName       | InstallDate | SoftwareCostUSD | ComputerModel
 --------- |:---------:| ----------------- | ----------- |:---------------:| -------------
 AC01      | 32808     | Lotus Notes       | 09-13-2005  | 754.95          | Apple
@@ -34,11 +41,14 @@ WP09      | 59836     | Ask Toolbar       | 10-30-2005  | 35.00           | IBM
 WP09      | 77740     | Ask Toolbar       | 05-27-2005  | 35.00           | IBM
 
 **Question 5**
-* (PackageID, TagNumber) ==> PackageName, InstallDate, SoftwareCostUSD, ComputerModel
-* PackageID ==> PackageName
+
+(PackageID, TagNumber) ==> PackageName, InstallDate, SoftwareCostUSD, ComputerModel
+
+PackageID ==> PackageName
 
 **Question 6**
-* This table is *not* in 3NF because the second dependency above is a partial dependency, which violates 2NF (and therefore, 3NF).
+
+This table is *not* in 3NF because the second dependency above is a partial dependency, which violates 2NF (and therefore, 3NF).
 
 **New Tables**
 
@@ -63,12 +73,17 @@ Installations | TagNumber | PackageID | InstallDate | SoftwareCostUSD | Computer
    -          | 77740     | WP09      | 05-27-2005  | 35.00           | IBM
 
 **Question 7**
+
 Primary key for Package table = PackageID
+
 Primary key for Installations table = (TagNumber, PackageID)
 
 **Question 8**
+
 PackageID ==> PackageName
+
 (TagNumber, PackageID) ==> InstallDate, SoftwareCostUSD, ComputerModel
 
 **Question 9**
 
+The new tables are in 3NF because each row-column cell has one value only (1NF), and all dependencies are exhaustive for each respective table, with no partial (2NF) or transitive (3NF) dependencies.
