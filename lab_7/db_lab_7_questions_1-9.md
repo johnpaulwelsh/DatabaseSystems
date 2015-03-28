@@ -52,37 +52,53 @@ This table is *not* in 3NF because the second dependency above is a partial depe
 
 **New Tables**
 
-Package | PackageID | PackageName
-------- | --------- | -----------------
-   -    | AC01      | Lotus Notes
-   -    | DB32      | Microsoft Access
-   -    | DB33      | Microsoft Outlook
-   -    | WP08      | RealPlayer
-   -    | WP09      | Ask Toolbar
+Packages | PackageID | PackageName
+-------- | --------- | -----------------
+   -     | AC01      | Lotus Notes
+   -     | DB32      | Microsoft Access
+   -     | DB33      | Microsoft Outlook
+   -     | WP08      | RealPlayer
+   -     | WP09      | Ask Toolbar
 
-Installations | TagNumber | PackageID | InstallDate | SoftwareCostUSD | ComputerModel
-------------- |:---------:| --------- | ----------- |:---------------:| -------------
-   -          | 32808     | AC01      | 09-13-2005  | 754.95          | Apple
-   -          | 32808     | DB32      | 12-03-2005  | 380.00          | Windows
-   -          | 37691     | DB32      | 06-15-2005  | 380.00          | IBM
-   -          | 57772     | DB33      | 05-27-2005  | 412.77          | Windows
-   -          | 32808     | WP08      | 01-12-2006  | 185.00          | IBM
-   -          | 37691     | WP08      | 06-15-2005  | 227.50          | Apple
-   -          | 57222     | WP08      | 05-27-2005  | 170.24          | Windows
-   -          | 59836     | WP09      | 10-30-2005  | 35.00           | IBM
-   -          | 77740     | WP09      | 05-27-2005  | 35.00           | IBM
+Orders | PackageID | TagNumber
+------ | --------- |:---------:
+   -   | AC01      | 32808
+   -   | DB32      | 32808
+   -   | DB32      | 37691
+   -   | DB33      | 57772
+   -   | WP08      | 32808
+   -   | WP08      | 37691
+   -   | WP08      | 57222
+   -   | WP09      | 59826
+   -   | WP09      | 77740
+
+Installations | PackageID | TagNumber | InstallDate | SoftwareCostUSD | ComputerModel
+------------- | --------- |:---------:| ----------- |:---------------:| -------------
+   -          | AC01      | 32808     | 09-13-2005  | 754.95          | Apple
+   -          | DB32      | 32808     | 12-03-2005  | 380.00          | Windows
+   -          | DB32      | 37691     | 06-15-2005  | 380.00          | IBM
+   -          | DB33      | 57772     | 05-27-2005  | 412.77          | Windows
+   -          | WP08      | 32808     | 01-12-2006  | 185.00          | IBM
+   -          | WP08      | 37691     | 06-15-2005  | 227.50          | Apple
+   -          | WP08      | 57222     | 05-27-2005  | 170.24          | Windows
+   -          | WP09      | 59826     | 10-30-2005  | 35.00           | IBM
+   -          | WP09      | 77740     | 05-27-2005  | 35.00           | IBM
 
 **Question 7**
 
-Primary key for Package table = PackageID
+Primary key for Packages table = PackageID
 
-Primary key for Installations table = (TagNumber, PackageID)
+Primary key for Orders table = (PackageID, TagNumber)
+
+Primary key for Installations table = (PackageID, TagNumber)
 
 **Question 8**
 
 PackageID ==> PackageName
 
-(TagNumber, PackageID) ==> InstallDate, SoftwareCostUSD, ComputerModel
+PackageID ==> (PackageID, TagNumber)
+
+(PackageID, TagNumber) ==> InstallDate, SoftwareCostUSD, ComputerModel
 
 **Question 9**
 
