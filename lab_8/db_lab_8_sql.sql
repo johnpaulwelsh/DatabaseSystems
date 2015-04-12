@@ -1,23 +1,33 @@
-﻿DROP TABLE IF EXISTS suppliers;
-DROP TABLE IF EXISTS supplierlocations;
-DROP TABLE IF EXISTS merchandise;
+﻿-- John Paul Welsh
+-- Lab 8
+
 DROP TABLE IF EXISTS merchorders;
-DROP TABLE IF EXISTS itemlists;
+DROP TABLE IF EXISTS itemsinlists;
+DROP TABLE IF EXISTS supplierlocations;
+DROP TABLE IF EXISTS suppliers;
+DROP TABLE IF EXISTS zipcodes;
+DROP TABLE IF EXISTS merchandise;
+
+-- Zip Codes --
+CREATE TABLE zipcodes (
+  zip integer,
+  primary key(zip)
+);
 
 -- Suppliers --
 CREATE TABLE suppliers (
   sid         char(4) not null,
   name        text,
-  zip         integer,
+  zip         integer references zipcodes(zip),
   payterms    text,
   contactinfo text,
- primary key(sid)
+  primary key(sid)
 );
 
 -- Supplier Location Information --
 CREATE TABLE supplierlocations (
   sid         char(4) not null references suppliers(sid),
-  zip         integer not null references suppliers(zip),
+  zip         integer not null references zipcodes(zip),
   address     text,
   city        text,
   state       char(2),
@@ -33,22 +43,22 @@ CREATE TABLE merchandise (
  primary key(sku)
 );
 
+-- Lists of Items in Each Order --
+CREATE TABLE itemsinlists (
+  listno   char(4) not null,
+  sku      char(4) not null references merchandise(sku),
+  quantity integer,
+  price    numeric(10,2),
+  primary key(listno,sku)
+);
+
 -- Orders -- 
 CREATE TABLE merchorders (
   ordno     char(4) not null,
   sid       char(4) references suppliers(sid),
-  listno    char(4) references itemlists(listno),
+  listno    char(4) references itemsinlists(listno),
   comments  text,
   orderdate date,
   primary key(ordno)
-);
-
--- Lists of Items in Each Order --
-CREATE TABLE itemlists (
-  listno char(4) not null,
-  sku    char(4) not null references merchandise(sku),
-  quantity integer,
-  price numeric(10,2),
-  primary key(listno,sku)
 );
 
