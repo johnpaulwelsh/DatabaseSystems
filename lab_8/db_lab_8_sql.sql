@@ -18,7 +18,7 @@ CREATE TABLE zipcodes (
 CREATE TABLE suppliers (
   sid         char(4) not null,
   name        text,
-  zip         integer references zipcodes(zip),
+  zip         integer not null references zipcodes(zip),
   payterms    text,
   contactinfo text,
   primary key(sid)
@@ -43,13 +43,19 @@ CREATE TABLE merchandise (
  primary key(sku)
 );
 
--- Lists of Items in Each Order --
-CREATE TABLE itemsinlists (
-  listno   char(4) not null,
+CREATE TABLE ordereditems (
+  itemid char(3) not null,
   sku      char(4) not null references merchandise(sku),
   quantity integer,
   price    numeric(10,2),
-  primary key(listno,sku)
+  primary key(itemid)
+);
+
+-- Lists of Items in Each Order --
+CREATE TABLE itemsinlists (
+  listno char(4) not null,
+  itemid char(3) references ordereditems(itemid),
+  primary key(listno)
 );
 
 -- Orders -- 
@@ -61,4 +67,3 @@ CREATE TABLE merchorders (
   orderdate date,
   primary key(ordno)
 );
-
