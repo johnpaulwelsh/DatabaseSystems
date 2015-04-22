@@ -19,21 +19,30 @@ begin
 end;
 $$ language plpgsql;
 
-select PreReqsFor(308);
+select PreReqsFor(308, 'results');
 fetch all from results;
 
 -- Question 2
 -- Returns the courses for which the passed-in course number is an
 -- immediate pre-requisite.
-create or replace function IsPreReqFor(searchNum) returns refcursor as
+create or replace function IsPreReqFor(integer) returns refcursor as
 $$
 declare
-   -- 
+   searchNum integer := $1;
+   results   refcursor;
 begin
-   open $1 for select * from someTable;
-   return $1;
+   open results for
+     select *
+       from courses c
+      where c.num in (select p.coursenum
+                        from prerequisites p
+                       where p.prereqnum = searchNum);
+   return results;
 end;
 $$ language plpgsql;
+
+select IsPreReqFor(308, 'results');
+fetch all from results;
 
 select *
 from prerequisites
