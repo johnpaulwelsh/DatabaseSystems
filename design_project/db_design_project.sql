@@ -1,6 +1,28 @@
 ﻿-- John Paul Welsh
 -- Galactic Empire Design Project
 
+-- Table Drops --
+-----------------
+DROP TABLE IF EXISTS alliedLeaders;
+DROP TABLE IF EXISTS enemyLeaders;
+DROP TABLE IF EXISTS alliedOrgs;
+DROP TABLE IF EXISTS enemyOrgs;
+DROP TABLE IF EXISTS organizations;
+DROP TABLE IF EXISTS jedi;
+DROP TABLE IF EXISTS sith;
+DROP TABLE IF EXISTS soldiers;
+DROP TABLE IF EXISTS spies;
+DROP TABLE IF EXISTS administrators;
+DROP TABLE IF EXISTS employees;
+DROP TABLE IF EXISTS basesOnPlanets;
+DROP TABLE IF EXISTS bases;
+DROP TABLE IF EXISTS planets;
+DROP TABLE IF EXISTS beings;
+
+-- Create Statements --
+-----------------------
+
+-- Planets --
 CREATE TABLE planets (
   planetname text not null,
   region     text,
@@ -9,18 +31,21 @@ CREATE TABLE planets (
   primary key(planetname)
 );
 
+-- Empire bases --
 CREATE TABLE bases (
   baseid       char(5) not null,
   supervisorid char(4) references beings(bid),
   primary key(basid)
 );
 
+-- A cross reference for which bases are on which planets --
 CREATE TABLE basesOnPlanets (
   baseid     char(5) not null references bases(baseid),
   planetname text    not null references planets(planetname),
   primary key(baseid, planetname)
 );
 
+-- Living Beings (equivalent to people, but more inclusive) --
 CREATE TABLE beings (
   bid        char(4),
   lastname   text,
@@ -31,6 +56,7 @@ CREATE TABLE beings (
   primary key(bid)
 );
 
+-- Jedi knights --
 CREATE TABLE jedi (
   bid        char(4) references beings(bid),
   sabercolor text, -- MAKE THIS A RESTRICTED DOMAIN
@@ -38,6 +64,7 @@ CREATE TABLE jedi (
   primary key(bid)
 );
 
+-- Sith lords --
 CREATE TABLE sith (
   bid        char(4) references beings(bid),
   sabercolor text, -- MAKE THIS A RESTRICTED DOMAIN
@@ -45,6 +72,7 @@ CREATE TABLE sith (
   primary key(bid)
 );
 
+-- Empire employees --
 CREATE TABLE employees (
   bid           char(4) references beings(bid),
   eid           char(4),
@@ -53,49 +81,72 @@ CREATE TABLE employees (
   primary key(eid)
 );
 
+-- Administrative employees --
 CREATE TABLE administrators (
-  eid char(4) references employees(eid),
+  adminid char(4) references employees(eid),
   primary key(bid)
 );
 
+-- Empire soldiers --
 CREATE TABLE soldiers (
-  eid     char(4) references employees(eid),
+  soldid  char(4) references employees(eid),
   isclone boolean,
   primary key(bid)
 );
 
+-- Spies for the Empire --
 CREATE TABLE spies (
-  eid         char(4) references employees(eid),
+  spyid       char(4) references employees(eid),
   focusplanet text references planets(planetname),
   primary key(bid)
 );
 
+-- Established organizations all across the galaxy --
 CREATE TABLE organizations (
   orgid   char(3),
   orgname text,
   primary key(orgid)
 );
 
+-- Organizations that are allied with the Empire --
 CREATE TABLE alliedOrgs (
   orgid            char(3) references organizations(orgid),
   lastactivitydate date,
   primary key(orgid)
 );
 
+-- Organizations that are enemies to the Empire --
 CREATE TABLE enemyOrgs (
   orgid          char(3) references organizations(orgid),
   lasttransmdate date,
   primary key(orgid)
 );
 
+-- Leaders of allied organizations --
 CREATE TABLE alliedLeaders (
   bid   char(4) references beings(bid),
   orgid char(3) references organizations(orgid),
   primary key(bid,orgid)
 );
 
+-- Leaders of enemy organizations --
 CREATE TABLE enemyLeaders (
   bid   char(4) references beings(bid),
   orgid char(3) references organizations(orgid),
   primary key(bid,orgid)
 );
+
+-- Views --
+-----------
+
+-- Reports --
+-------------
+
+-- Stored Procedures --
+-----------------------
+
+-- Triggers --
+--------------
+
+-- Security --
+--------------
