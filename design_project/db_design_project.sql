@@ -3,8 +3,6 @@
 
 -- Table Drops --
 -----------------
-DROP TABLE IF EXISTS alliedLeaders;
-DROP TABLE IF EXISTS enemyLeaders;
 DROP TABLE IF EXISTS alliedOrgs;
 DROP TABLE IF EXISTS enemyOrgs;
 DROP TABLE IF EXISTS organizations;
@@ -41,19 +39,17 @@ CREATE TABLE beings (
   primary key(bid)
 );
 
--- Jedi knights --
+-- Jedi --
 CREATE TABLE jedi (
   bid        char(4) references beings(bid),
-  sabercolor text, -- MAKE THIS A RESTRICTED DOMAIN
-  rank       text, -- THIS TOO
+  sabercolor text,
   primary key(bid)
 );
 
--- Sith lords --
+-- Sith --
 CREATE TABLE sith (
   bid        char(4) references beings(bid),
-  sabercolor text, -- MAKE THIS A RESTRICTED DOMAIN
-  rank       text, -- THIS TOO
+  sabercolor text,
   primary key(bid)
 );
 
@@ -77,14 +73,15 @@ CREATE TABLE employees (
 -- Administrative employees --
 CREATE TABLE administrators (
   adminid        char(4) references employees(eid),
-  baseassignment char(4) references bases(baseid),
+  baseassignment char(5) references bases(baseid),
   primary key(adminid)
 );
 
 -- Empire soldiers --
 CREATE TABLE soldiers (
-  soldid  char(4) references employees(eid),
-  isclone boolean,
+  soldid        char(4) references employees(eid),
+  isclone       boolean,
+  battlesfought int,
   primary key(soldid)
 );
 
@@ -105,6 +102,7 @@ CREATE TABLE organizations (
 -- Organizations that are allied with the Empire --
 CREATE TABLE alliedOrgs (
   orgid          char(3) references organizations(orgid),
+  leader           char(4) references beings(bid),
   lasttransmdate date,
   primary key(orgid)
 );
@@ -112,26 +110,14 @@ CREATE TABLE alliedOrgs (
 -- Organizations that are enemies to the Empire --
 CREATE TABLE enemyOrgs (
   orgid            char(3) references organizations(orgid),
+  leader           char(4) references beings(bid),
   lastactivitydate date,
   primary key(orgid)
 );
 
--- Leaders of allied organizations --
-CREATE TABLE alliedLeaders (
-  bid   char(4) references beings(bid),
-  orgid char(3) references organizations(orgid),
-  primary key(bid,orgid)
-);
-
--- Leaders of enemy organizations --
-CREATE TABLE enemyLeaders (
-  bid   char(4) references beings(bid),
-  orgid char(3) references organizations(orgid),
-  primary key(bid,orgid)
-);
-
 -- Sample Data --
 -----------------
+-- Insert habitats --
 INSERT INTO habitats(habitatname, region, sector, sys)
              VALUES('Alderaan', 'Core Worlds', 'Alderaan', 'Alderaan');
 INSERT INTO habitats(habitatname, region, sector, sys)
@@ -144,18 +130,22 @@ INSERT INTO habitats(habitatname, region, sector, sys)
              VALUES('Eriadu', 'Outer Rim Territories', 'Seswanna', 'Eriadu');
 INSERT INTO habitats(habitatname, region, sector, sys)
              VALUES('Naboo', 'Mid Rim', 'Chommell', 'Naboo');
+INSERT INTO habitats(habitatname, region, sector, sys)
+             VALUES('Geonosis', 'Outer Rim Territories', 'Arkanis', 'Geonosis');
 
+-- Insert bases --
 INSERT INTO bases(baseid, basename, habitatname)
            VALUES('b0001', 'Death Star', null);
-INSERT INTO bases(baseid)
+INSERT INTO bases(baseid, basename, habitatname)
            VALUES('b0002', 'Fondor II', 'Eriadu');
-INSERT INTO bases(baseid)
+INSERT INTO bases(baseid, basename, habitatname)
            VALUES('b0003', 'Tremor Base', 'Eriadu');
-INSERT INTO bases(baseid)
+INSERT INTO bases(baseid, basename, habitatname)
            VALUES('b0004', 'Kashyyyk Imperial Base', 'Kashyyyk');
-INSERT INTO bases(baseid)
+INSERT INTO bases(baseid, basename, habitatname)
            VALUES('b0005', 'Alpha Outpost', 'Tatooine');
 
+-- Insert organizations --
 INSERT INTO organizations(orgid, orgname)
                    VALUES('o01', 'Raider Allegiance');
 INSERT INTO organizations(orgid, orgname)
@@ -167,16 +157,7 @@ INSERT INTO organizations(orgid, orgname)
 INSERT INTO organizations(orgid, orgname)
                    VALUES('o05', 'Hutt Gang');
 
-INSERT INTO alliedOrgs(orgid, lasttransmdate)
-                   VALUES('o05', '2012-10-06');
-INSERT INTO alliedOrgs(orgid, lasttransmdate)
-                   VALUES('o03', '2015-01-01');
-
-INSERT INTO enemyOrgs(orgid, lastactivitydate)
-                   VALUES('o04', '2015-02-03');
-INSERT INTO enemyOrgs(orgid, lastactivitydate)
-                   VALUES('o02', '2013-12-21');
-
+-- Insert beings --
 INSERT INTO beings(bid, firstname, lastname, homehabitat, species, birthdate)
             VALUES('x001', 'Luke', 'Skywalker', 'Tatooine', 'Human', '1965-06-13');
 INSERT INTO beings(bid, firstname, lastname, homehabitat, species, birthdate)
@@ -189,8 +170,74 @@ INSERT INTO beings(bid, firstname, lastname, homehabitat, species, birthdate)
             VALUES('x005', 'Leia', 'Organa', 'Alderaan', 'Human', '1965-06-13');
 INSERT INTO beings(bid, firstname, lastname, homehabitat, species, birthdate)
             VALUES('x006', null, 'Palpatine', 'Naboo', 'Human', '1919-12-01');
+INSERT INTO beings(bid, firstname, lastname, homehabitat, species, birthdate)
+            VALUES('x007', 'Randy', 'Jacksonista', 'Alderaan', 'Human', '1938-11-04');
+INSERT INTO beings(bid, firstname, lastname, homehabitat, species, birthdate)
+            VALUES('x008', 'Jabba', null, 'Tatooine', 'Hutt', '1968-08-08');
+INSERT INTO beings(bid, firstname, lastname, homehabitat, species, birthdate)
+            VALUES('y001', null, null, 'Geonosis', 'Human', '1940-04-01');
+INSERT INTO beings(bid, firstname, lastname, homehabitat, species, birthdate)
+            VALUES('y002', null, null, 'Geonosis', 'Human', '1940-04-01');
+INSERT INTO beings(bid, firstname, lastname, homehabitat, species, birthdate)
+            VALUES('y003', null, null, 'Geonosis', 'Human', '1940-04-01');
+INSERT INTO beings(bid, firstname, lastname, homehabitat, species, birthdate)
+            VALUES('y004', 'Pilth', 'Phosphor', 'Alderaan', 'Human', '1938-09-01');
 
+-- Insert allied organizations --
+INSERT INTO alliedOrgs(orgid, lasttransmdate, leader)
+                   VALUES('o05', '2012-10-06', 'x008');
+INSERT INTO alliedOrgs(orgid, lasttransmdate, leader)
+                   VALUES('o03', '2015-01-01', 'x007');
 
+-- Insert enemy organizations --
+INSERT INTO enemyOrgs(orgid, lastactivitydate, leader)
+                   VALUES('o04', '2015-02-03', 'x001');
+INSERT INTO enemyOrgs(orgid, lastactivitydate, leader)
+                   VALUES('o02', '2013-12-21', 'x005');
+
+-- Insert employees --
+INSERT INTO employees(bid, eid, stationbaseid, salaryGCS)
+               VALUES('x002', 'e001', 'b0001', 100000.00);
+INSERT INTO employees(bid, eid, stationbaseid, salaryGCS)
+               VALUES('x004', 'e002', 'b0001', 90000.00);
+INSERT INTO employees(bid, eid, stationbaseid, salaryGCS)
+               VALUES('x006', 'e003', 'b0001', 150000.00);
+INSERT INTO employees(bid, eid, stationbaseid, salaryGCS)
+               VALUES('y001', 'e004', 'b0004', 5000.00);
+INSERT INTO employees(bid, eid, stationbaseid, salaryGCS)
+               VALUES('y002', 'e005', 'b0004', 5000.00);
+INSERT INTO employees(bid, eid, stationbaseid, salaryGCS)
+               VALUES('y003', 'e006', 'b0005', 5000.00);
+INSERT INTO employees(bid, eid, stationbaseid, salaryGCS)
+               VALUES('y004', 'e007', 'b0002', 10000.00);
+
+-- Insert administrators --
+INSERT INTO administrators(adminid, baseassignment)
+                    VALUES('e001', 'b0001');
+INSERT INTO administrators(adminid, baseassignment)
+                    VALUES('e002', 'b0003');
+
+-- Insert soldiers --
+INSERT INTO soldiers(soldid, isclone, battlesfought)
+              VALUES('e004', true, 30);
+INSERT INTO soldiers(soldid, isclone, battlesfought)
+              VALUES('e005', true, 15);
+INSERT INTO soldiers(soldid, isclone, battlesfought)
+              VALUES('e006', true, 24);
+INSERT INTO soldiers(soldid, isclone, battlesfought)
+              VALUES('e007', false, 8);
+
+-- Insert jedi --
+INSERT INTO jedi(bid, sabercolor)
+          VALUES('x001', 'green');
+
+-- Insert sith --
+INSERT INTO sith(bid, sabercolor)
+          VALUES('x002', 'red');
+INSERT INTO sith(bid, sabercolor)
+          VALUES('x006', 'red');
+
+select * from enemyOrgs
 
 -- Views --
 -----------
