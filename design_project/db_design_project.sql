@@ -16,8 +16,8 @@ DROP TABLE IF EXISTS administrators;
 DROP TABLE IF EXISTS employees;
 DROP TABLE IF EXISTS basesOnPlanets;
 DROP TABLE IF EXISTS bases;
-DROP TABLE IF EXISTS planets;
 DROP TABLE IF EXISTS beings;
+DROP TABLE IF EXISTS planets;
 
 -- Create Statements --
 -----------------------
