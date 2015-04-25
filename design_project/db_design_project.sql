@@ -31,26 +31,12 @@ CREATE TABLE planets (
   primary key(planetname)
 );
 
--- Empire bases --
-CREATE TABLE bases (
-  baseid       char(5) not null,
-  supervisorid char(4) references beings(bid),
-  primary key(basid)
-);
-
--- A cross reference for which bases are on which planets --
-CREATE TABLE basesOnPlanets (
-  baseid     char(5) not null references bases(baseid),
-  planetname text    not null references planets(planetname),
-  primary key(baseid, planetname)
-);
-
 -- Living Beings (equivalent to people, but more inclusive) --
 CREATE TABLE beings (
   bid        char(4),
   lastname   text,
   firstname  text,
-  homeplanet text ref planets(planetname),
+  homeplanet text references planets(planetname),
   species    text,
   birthdate  date,
   primary key(bid)
@@ -72,6 +58,12 @@ CREATE TABLE sith (
   primary key(bid)
 );
 
+-- Empire bases --
+CREATE TABLE bases (
+  baseid       char(5) not null,
+  primary key(baseid)
+);
+
 -- Empire employees --
 CREATE TABLE employees (
   bid           char(4) references beings(bid),
@@ -83,22 +75,30 @@ CREATE TABLE employees (
 
 -- Administrative employees --
 CREATE TABLE administrators (
-  adminid char(4) references employees(eid),
-  primary key(bid)
+  adminid        char(4) references employees(eid),
+  baseassignment char(4) references bases(baseid),
+  primary key(adminid)
 );
 
 -- Empire soldiers --
 CREATE TABLE soldiers (
   soldid  char(4) references employees(eid),
   isclone boolean,
-  primary key(bid)
+  primary key(soldid)
 );
 
 -- Spies for the Empire --
 CREATE TABLE spies (
   spyid       char(4) references employees(eid),
-  focusplanet text references planets(planetname),
-  primary key(bid)
+  focusplanet text    references planets(planetname),
+  primary key(spyid)
+);
+
+-- A cross reference for which bases are on which planets --
+CREATE TABLE basesOnPlanets (
+  baseid     char(5) not null references bases(baseid),
+  planetname text    not null references planets(planetname),
+  primary key(baseid, planetname)
 );
 
 -- Established organizations all across the galaxy --
@@ -138,6 +138,8 @@ CREATE TABLE enemyLeaders (
 
 -- Views --
 -----------
+
+
 
 -- Reports --
 -------------
