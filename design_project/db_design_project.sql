@@ -17,7 +17,9 @@ DROP TABLE IF EXISTS beings;
 DROP TABLE IF EXISTS habitats;
 
 DROP VIEW IF EXISTS cloneSoldiers;
+DROP VIEW IF EXISTS nonEmployees;
 DROP VIEW IF EXISTS humanBeings;
+DROP VIEW IF EXISTS neutralOrgs;
 
 -- Create Statements --
 -----------------------
@@ -240,16 +242,17 @@ INSERT INTO sith(bid, sabercolor)
 INSERT INTO sith(bid, sabercolor)
           VALUES('x006', 'red');
 
-select * from habitats
-
 -- Views --
 -----------
+
+-- Soldier id and number of battles fought for clone soldiers
 CREATE VIEW cloneSoldiers(soldid, battlesfought) AS
   select s.soldid,
          s.battlesfought
     from soldiers s
    where s.isclone = true;
 
+-- Beings who are not imperial employees
 CREATE VIEW nonEmployees(bid, lastname, firstname, homehabitat, birthdate) AS
   select b.bid,
          b.lastname,
@@ -260,6 +263,7 @@ CREATE VIEW nonEmployees(bid, lastname, firstname, homehabitat, birthdate) AS
    where b.bid not in (select e.bid
                          from employees e);
 
+-- Beings who are human
 CREATE VIEW humanBeings(bid, lastname, firstname, homehabitat, birthdate) AS
   select b.bid,
          b.lastname,
@@ -269,6 +273,7 @@ CREATE VIEW humanBeings(bid, lastname, firstname, homehabitat, birthdate) AS
     from beings b
    where b.species = 'Human';
 
+-- Organizations who are not allied with or enemies to the Empire
 CREATE VIEW neutralOrgs(orgid, orgname) AS
   select o.orgid,
          o.orgname
@@ -318,8 +323,32 @@ select b.bid,
 -- Stored Procedures --
 -----------------------
 
+-- Returns all beings whose home habitat is given as a parameter
+CREATE OR REPLACE FUNCTION AllBeingsFromHabitat(text, refcursor) RETURNS refcursor AS
+$$
+DECLARE
+  searchHabitat text      := $1;
+  results       refcursor := $2;
+BEGIN
+  OPEN results FOR
+    select *
+      from beings b
+     where b.homehabitat = searchHabitat;
+  RETURN results;
+END;
+$$ LANGUAGE plpgsql;
+
+select AllBeingsFromHabitat('Alderaan', 'results');
+fetch all from results;
+
+
+
 -- Triggers --
 --------------
 
+
+
 -- Security --
 --------------
+
+
