@@ -9,7 +9,6 @@ DROP TABLE IF EXISTS organizations;
 DROP TABLE IF EXISTS jedi;
 DROP TABLE IF EXISTS sith;
 DROP TABLE IF EXISTS soldiers;
-DROP TABLE IF EXISTS spies;
 DROP TABLE IF EXISTS administrators;
 DROP TABLE IF EXISTS employees;
 DROP TABLE IF EXISTS bases;
@@ -35,18 +34,18 @@ CREATE TABLE habitats (
 
 -- Living Beings (equivalent to people, but more inclusive) --
 CREATE TABLE beings (
-  bid        char(4),
-  lastname   text,
-  firstname  text,
+  bid         char(4) not null,
+  lastname    text,
+  firstname   text,
   homehabitat text references habitats(habitatname),
-  species    text,
-  birthdate  date,
+  species     text,
+  birthdate   date,
   primary key(bid)
 );
 
 -- Jedi --
 CREATE TABLE jedi (
-  bid        char(4) references beings(bid),
+  bid        char(4) not null references beings(bid),
   sabercolor text,
   primary key(bid)
 );
@@ -88,13 +87,6 @@ CREATE TABLE soldiers (
   isclone       boolean,
   battlesfought int,
   primary key(soldid)
-);
-
--- Spies for the Empire --
-CREATE TABLE spies (
-  spyid       char(4) references employees(eid),
-  focushabitat text    references habitats(habitatname),
-  primary key(spyid)
 );
 
 -- Established organizations all across the galaxy --
@@ -341,12 +333,43 @@ $$ LANGUAGE plpgsql;
 select AllBeingsFromHabitat('Alderaan', 'results');
 fetch all from results;
 
+-- Returns true if the given habitat has both a soldier and an administrator
+-- originating from it, false otherwise
+CREATE OR REPLACE FUNCTION HasSoldierAndAdmin(text, refcursor) RETURNS boolean AS
+$$
+DECLARE
+  searchHabitat text      := $1;
+  answer        boolean;
+  resultSet     refcursor := $2;
+  rowCount      int;
+BEGIN
+  OPEN resultSet FOR
+    select b.bid
+      from soldiers sl,
+           employees e,
+           beings b
+     where sl.soldid = e.eid
+       and e.bid = b.bid
+       and b.homehabitat in (select b.homehabitat
+                               from administrators a,
+                                    employees e,
+                                    beings b
+                              where a.adminid = e.eid
+                                and e.bid = b.bid
+                                and b.homehabitat = searchHabitat);
+    rowCount := (select count(rs.bid)
+                   from resultSet rs);
+    answer := (rowCount > 0);
+  RETURN answer;
+END;
+$$ LANGUAGE plpgsql;
 
+select HasSoldierAndAdmin('Tatooine', 'resultSet');
 
 -- Triggers --
 --------------
 
-
+select * from spies
 
 -- Security --
 --------------
