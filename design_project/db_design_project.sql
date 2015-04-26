@@ -272,6 +272,25 @@ CREATE VIEW neutralOrgs(orgid, orgname) AS
 -- Reports --
 -------------
 
+-- All employees with a salary of at least 100,000.00 Galactic Standard Credits
+select *
+  from employees e
+ where e.salaryGCS >= 100000.00;
+
+-- All beings whose home habitat is Tatooine
+select *
+  from beings b
+ where b.homehabitat = 'Tatooine';
+
+-- The administrators of and names of all bases that do not have a habitat
+select a.adminid,
+       b.basename
+  from bases b
+       left outer join
+       administrators a
+    on b.baseid = a.baseassignment
+ where b.habitatname is null;
+
 -- Stored Procedures --
 -----------------------
 
