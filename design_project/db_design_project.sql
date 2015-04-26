@@ -333,38 +333,25 @@ $$ LANGUAGE plpgsql;
 select AllBeingsFromHabitat('Alderaan', 'results');
 fetch all from results;
 
--- Returns true if the given habitat has both a soldier and an administrator
--- originating from it, false otherwise
-CREATE OR REPLACE FUNCTION HasSoldierAndAdmin(text, refcursor) RETURNS boolean AS
+-- Returns all employees whose birthdate comes before the given date
+CREATE OR REPLACE FUNCTION EmployeesOlderThan(date, refcursor) RETURNS refcursor AS
 $$
 DECLARE
-  searchHabitat text      := $1;
-  answer        boolean;
-  resultSet     refcursor := $2;
-  rowCount      int;
+  searchDate date      := $1;
+  results    refcursor := $2;
 BEGIN
-  OPEN resultSet FOR
-    select b.bid
-      from soldiers sl,
-           employees e,
-           beings b
-     where sl.soldid = e.eid
-       and e.bid = b.bid
-       and b.homehabitat in (select b.homehabitat
-                               from administrators a,
-                                    employees e,
-                                    beings b
-                              where a.adminid = e.eid
-                                and e.bid = b.bid
-                                and b.homehabitat = searchHabitat);
-    rowCount := (select count(rs.bid)
-                   from resultSet rs);
-    answer := (rowCount > 0);
-  RETURN answer;
+  OPEN results FOR
+    select e.eid
+      from beings b,
+           employees e
+     where b.bid = e.bid
+       and b.birthdate < searchDate;
+  RETURN results;
 END;
 $$ LANGUAGE plpgsql;
 
-select HasSoldierAndAdmin('Tatooine', 'resultSet');
+select EmployeesOlderThan('1940-01-01', 'results');
+fetch all from results;
 
 -- Triggers --
 --------------
