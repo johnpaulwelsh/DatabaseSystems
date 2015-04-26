@@ -16,6 +16,9 @@ DROP TABLE IF EXISTS bases;
 DROP TABLE IF EXISTS beings;
 DROP TABLE IF EXISTS habitats;
 
+DROP VIEW IF EXISTS cloneSoldiers;
+DROP VIEW IF EXISTS humanBeings;
+
 -- Create Statements --
 -----------------------
 
@@ -237,10 +240,34 @@ INSERT INTO sith(bid, sabercolor)
 INSERT INTO sith(bid, sabercolor)
           VALUES('x006', 'red');
 
-select * from enemyOrgs
+select * from habitats
 
 -- Views --
 -----------
+CREATE VIEW cloneSoldiers(soldid, battlesfought) AS
+  select s.soldid,
+         s.battlesfought
+    from soldiers s
+   where s.isclone = true;
+
+CREATE VIEW humanBeings(bid, lastname, firstname, homehabitat, birthdate) AS
+  select b.bid,
+         b.lastname,
+         b.firstname,
+         b.homehabitat,
+         b.birthdate
+    from beings b
+   where b.species = 'Human';
+
+CREATE VIEW neutralOrgs(orgid, orgname) AS
+  select o.orgid,
+         o.orgname
+    from organizations o
+   where o.orgid not in (select ao.orgid
+                           from alliedOrgs ao)
+     and o.orgid not in (select en.orgid
+                           from enemyOrgs en);
+
 
 -- Reports --
 -------------
