@@ -250,6 +250,16 @@ CREATE VIEW cloneSoldiers(soldid, battlesfought) AS
     from soldiers s
    where s.isclone = true;
 
+CREATE VIEW nonEmployees(bid, lastname, firstname, homehabitat, birthdate) AS
+  select b.bid,
+         b.lastname,
+         b.firstname,
+         b.homehabitat,
+         b.birthdate
+    from beings b
+   where b.bid not in (select e.bid
+                         from employees e);
+
 CREATE VIEW humanBeings(bid, lastname, firstname, homehabitat, birthdate) AS
   select b.bid,
          b.lastname,
@@ -272,7 +282,8 @@ CREATE VIEW neutralOrgs(orgid, orgname) AS
 -- Reports --
 -------------
 
--- All employees with a salary of at least 100,000.00 Galactic Standard Credits
+-- All info about employees with a salary of at least
+-- 100,000.00 Galactic Standard Credits
 select *
   from employees e
  where e.salaryGCS >= 100000.00;
@@ -282,7 +293,8 @@ select *
   from beings b
  where b.homehabitat = 'Tatooine';
 
--- The administrators of and names of all bases that do not have a habitat
+-- The administrator ids of, and names of, all bases
+-- that do not have a habitat
 select a.adminid,
        b.basename
   from bases b
@@ -290,6 +302,18 @@ select a.adminid,
        administrators a
     on b.baseid = a.baseassignment
  where b.habitatname is null;
+
+-- All non-employees who are from the same planet as a sith
+select b.bid,
+       b.lastname,
+       b.firstname
+  from beings b,
+       nonEmployees ne
+ where b.bid = ne.bid
+   and b.homehabitat in (select b2.homehabitat
+                           from beings b2,
+                                sith s
+                          where b2.bid = s.bid);
 
 -- Stored Procedures --
 -----------------------
