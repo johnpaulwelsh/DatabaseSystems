@@ -375,6 +375,12 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER incrNonCloneSalaryOn50Battles
 AFTER UPDATE ON soldiers FOR EACH ROW EXECUTE PROCEDURE incrSalary();
 
+-- Scripts applied to show off trigger --
+--UPDATE soldiers
+--   SET battlesfought = 50
+-- WHERE soldid = 'e007';
+--select * from employees;
+
 -- Security --
 --------------
 
