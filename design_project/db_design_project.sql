@@ -3,6 +3,7 @@
 
 -- Table Drops --
 -----------------
+
 DROP TABLE IF EXISTS alliedOrgs;
 DROP TABLE IF EXISTS enemyOrgs;
 DROP TABLE IF EXISTS organizations;
@@ -26,9 +27,9 @@ DROP VIEW IF EXISTS neutralOrgs;
 -- Habitats (equivalent to planets, but inclusive of moons) --
 CREATE TABLE habitats (
   habitatname text not null,
-  region     text,
-  sector     text,
-  sys        text,
+  region      text,
+  sector      text,
+  sys         text,
   primary key(habitatname)
 );
 
@@ -52,7 +53,7 @@ CREATE TABLE jedi (
 
 -- Sith --
 CREATE TABLE sith (
-  bid        char(4) references beings(bid),
+  bid        char(4) not null references beings(bid),
   sabercolor text,
   primary key(bid)
 );
@@ -67,7 +68,7 @@ CREATE TABLE bases (
 
 -- Empire employees --
 CREATE TABLE employees (
-  bid           char(4) references beings(bid),
+  bid           char(4) not null references beings(bid),
   eid           char(4),
   stationbaseid char(5) references bases(baseid),
   salaryGCS     numeric(10,2),
@@ -76,14 +77,14 @@ CREATE TABLE employees (
 
 -- Administrative employees --
 CREATE TABLE administrators (
-  adminid        char(4) references employees(eid),
+  adminid        char(4) not null references employees(eid),
   baseassignment char(5) references bases(baseid),
   primary key(adminid)
 );
 
 -- Empire soldiers --
 CREATE TABLE soldiers (
-  soldid        char(4) references employees(eid),
+  soldid        char(4) not null references employees(eid),
   isclone       boolean,
   battlesfought int,
   primary key(soldid)
@@ -91,22 +92,22 @@ CREATE TABLE soldiers (
 
 -- Established organizations all across the galaxy --
 CREATE TABLE organizations (
-  orgid   char(3),
+  orgid   char(3) not null,
   orgname text,
   primary key(orgid)
 );
 
 -- Organizations that are allied with the Empire --
 CREATE TABLE alliedOrgs (
-  orgid          char(3) references organizations(orgid),
-  leader           char(4) references beings(bid),
+  orgid          char(3) not null references organizations(orgid),
+  leader         char(4) references beings(bid),
   lasttransmdate date,
   primary key(orgid)
 );
 
 -- Organizations that are enemies to the Empire --
 CREATE TABLE enemyOrgs (
-  orgid            char(3) references organizations(orgid),
+  orgid            char(3) not null references organizations(orgid),
   leader           char(4) references beings(bid),
   lastactivitydate date,
   primary key(orgid)
@@ -114,6 +115,7 @@ CREATE TABLE enemyOrgs (
 
 -- Sample Data --
 -----------------
+
 -- Insert habitats --
 INSERT INTO habitats(habitatname, region, sector, sys)
              VALUES('Alderaan', 'Core Worlds', 'Alderaan', 'Alderaan');
@@ -275,7 +277,6 @@ CREATE VIEW neutralOrgs(orgid, orgname) AS
      and o.orgid not in (select en.orgid
                            from enemyOrgs en);
 
-
 -- Reports --
 -------------
 
@@ -356,7 +357,23 @@ fetch all from results;
 -- Triggers --
 --------------
 
-select * from spies
+CREATE OR REPLACE FUNCTION incrSalary() RETURNS trigger AS
+$$
+BEGIN
+  IF (NEW.isclone = false) THEN
+    IF (NEW.battlesfought > 49) THEN
+      UPDATE employees
+         SET salaryGCS = salaryGCS + 3000.00
+       WHERE employees.eid = NEW.soldid;
+    END IF;
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER incrNonCloneSalaryOn50Battles
+AFTER UPDATE ON soldiers FOR EACH ROW EXECUTE PROCEDURE incrSalary();
 
 -- Security --
 --------------
