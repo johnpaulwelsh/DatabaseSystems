@@ -378,4 +378,20 @@ AFTER UPDATE ON soldiers FOR EACH ROW EXECUTE PROCEDURE incrSalary();
 -- Security --
 --------------
 
+-- Database administrator --
+CREATE ROLE dbadmin;
+GRANT ALL ON ALL TABLES IN SCHEMA PUBLIC
+TO dbadmin;
 
+-- Soldiers --
+CREATE ROLE soldiers;
+GRANT SELECT ON habitats, bases, soldiers, jedi, sith
+TO soldiers;
+
+-- Imperial administrators, to distinguish from the DB admin --
+CREATE ROLE impadmin;
+GRANT SELECT ON ALL TABLES IN SCHEMA PUBLIC
+TO impadmin;
+GRANT INSERT, UPDATE ON soldiers, employees, jedi, sith, bases,
+                        habitats, organizations, alliedOrgs, enemyOrgs
+TO impadmin;
